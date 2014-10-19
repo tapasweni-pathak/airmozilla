@@ -47,52 +47,11 @@
     {% if warning %}
       <div class="warning">Warning: {{ warning }}</div>
     {% endif %}
-    <header class="entry-header">
-      <h1 class="entry-title">
-        {{ event.title }}
-      </h1>
-      {% include 'main/_event_privacy.html' %}
-      {% if can_manage_edit_event or can_edit_event %}
-        <p class="entry-edit-shortcut">
-          {% if can_manage_edit_event %}
-          <a href="{{ url('manage:event_edit', event.pk) }}" title="Shortcut to edit this event">Producer edit event &raquo;</a><br>
-          {% endif %}
-          {% if can_edit_event %}
-          <a href="{{ url('main:event_edit', event.slug) }}"
-             title="Click to edit any of the meta data about this event">Edit event data &raquo;</a>
-          {% endif %}
-        </p>
-      {% endif %}
-
-      <p>
-      {% if not pending %}
-      <h2 class="event-date">
-        {{ event.start_time | js_date }}
-	      {% if event.is_upcoming() %}
-          &mdash;
-          {{ event.location_time.strftime("%I:%M%p") }} in {{ event.location.name }}
-        {% endif %}
-      </h2>
-      {% endif %}
-      <p>
-        {% if participants %}
-          {{ _('Featuring ') }}
-          {% for participant in participants %}
-            <a href="{{ url('main:participant', participant.slug) }}">
-              {{ participant.name }}</a>
-            {%- if not loop.last %}, {% endif -%}
-          {% endfor %}
-          &bull;
-        {% endif %}
-        {% if event.location and not event.location.name.startswith('Cyberspace') %}
-          {{ _('Location') }}: {{ event.location.name }}
-        {% endif %}
-      </p>
-    </header>
-    <div class="entry-content">
+    
+  <div class="video-container">
       {% if pending %}
         <p class="pending">
-        Event is currently in a pending state meaning it will soon be made available.
+          Event is currently in a pending state meaning it will soon be made available.
         </p>
       {% else %}
         {% if video %}
@@ -111,6 +70,52 @@
                height="{{ thumb.height }}" alt="{{ event.title }}">
         {% endif %}
       {% endif %}
+  </div>
+  <header class="entry-header">
+      {% include 'main/_event_privacy.html' %}
+      {% if can_manage_edit_event or can_edit_event %}
+        <p class="entry-edit-shortcut">
+          {% if can_manage_edit_event %}
+          <a href="{{ url('manage:event_edit', event.pk) }}" title="Shortcut to edit this event">Producer edit event &raquo;</a><br>
+          {% endif %}
+          {% if can_edit_event %}
+          <a href="{{ url('main:event_edit', event.slug) }}"
+             title="Click to edit any of the meta data about this event">Edit event data &raquo;</a>
+          {% endif %}
+        </p>
+      {% endif %}
+      <h1 class="entry-title">
+          {{ event.title }}
+      </h1>
+      <p>
+        {% if not pending %}
+          <h2 class="event-date">
+          {{ event.start_time | js_date }}
+	      {% if event.is_upcoming() %}
+          &mdash;
+          {{ event.location_time.strftime("%I:%M%p") }} in {{ event.location.name }}
+         {% endif %}
+         </h2>
+       {% endif %}
+    </header>
+
+    <div class="entry-content">
+      
+
+      <p>
+        {% if participants %}
+          {{ _('Featuring ') }}
+          {% for participant in participants %}
+            <a href="{{ url('main:participant', participant.slug) }}">
+              {{ participant.name }}</a>
+            {%- if not loop.last %}, {% endif -%}
+          {% endfor %}
+          &bull;
+        {% endif %}
+        {% if event.location and not event.location.name.startswith('Cyberspace') %}
+          {{ _('Location') }}: {{ event.location.name }}
+        {% endif %}
+      </p>
       <p>{{ event.description | carefulnl2br | safe_html }}</p>
 
       {% if tags %}
